@@ -35,18 +35,19 @@ for fname in images:
         # Draw and display the corners
         img = cv2.drawChessboardCorners(img, (7,7), corners2,ret)
         cv2.imshow('img',img)
-        cv2.waitKey(1000)
+        cv2.waitKey(10)
 
 cv2.destroyAllWindows()
 
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
-
+print(dist)
 img = cv2.imread('E:\MISC\MacHacks\WhiteoardPython\surface_detect\photo_set\proof_of_concept.jpg')
 h,  w = img.shape[:2]
 newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 
-print(newcameramtx)
-print(newcameramtx[0,0],newcameramtx[1,1],newcameramtx[0,2],newcameramtx[1,2]) ######## what we want
+
+print(mtx)
+print(mtx[0,0],mtx[1,1],mtx[0,2],mtx[1,2]) ######## what we want
 
 # undistort
 dst = cv2.undistort(img, mtx, dist, None, newcameramtx)

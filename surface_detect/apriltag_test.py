@@ -22,7 +22,7 @@ def rot_matrix_to_euler(R):
     z_rot_angle = z_rot *(180/numpy.pi)
     return (x_rot_angle,y_rot_angle,z_rot_angle)
 
-image = cv2.imread("E:\\MISC\\MacHacks\\WhiteoardPython\\surface_detect\\apriltag_photos\\april3.jpg")
+image = cv2.imread("E:\\MISC\\MacHacks\\WhiteoardPython\\surface_detect\\apriltag_photos\\april1.jpg")
 
 bw_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
