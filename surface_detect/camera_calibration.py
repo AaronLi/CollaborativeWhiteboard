@@ -46,7 +46,7 @@ h,  w = img.shape[:2]
 newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 
 print(newcameramtx)
-print(newcameramtx[0,0],newcameramtx[1,1]) ######## what we wantame
+print(newcameramtx[0,0],newcameramtx[1,1],newcameramtx[0,2],newcameramtx[1,2]) ######## what we want
 
 # undistort
 dst = cv2.undistort(img, mtx, dist, None, newcameramtx)
