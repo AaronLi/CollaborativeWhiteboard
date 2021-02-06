@@ -5,13 +5,13 @@ import os.path as osp
 import torch
 import cv2
 
-from hand_shape_pose.config import cfg
-from hand_shape_pose.model.pose_mlp_network import MLPPoseNetwork
-from hand_shape_pose.data.build import build_dataset
+from ai_hand.hand_shape_pose.config import cfg
+from ai_hand.hand_shape_pose.model.pose_mlp_network import MLPPoseNetwork
+from ai_hand.hand_shape_pose.data.build import build_dataset
 
-from hand_shape_pose.util.logger import setup_logger, get_logger_filename
-from hand_shape_pose.util.miscellaneous import mkdir
-from hand_shape_pose.util.vis_pose_only import draw_2d_skeleton, draw_3d_skeleton
+from ai_hand.hand_shape_pose.util.logger import setup_logger, get_logger_filename
+from ai_hand.hand_shape_pose.util.miscellaneous import mkdir
+from ai_hand.hand_shape_pose.util.vis_pose_only import draw_2d_skeleton, draw_3d_skeleton
 
 import numpy as np
 
@@ -34,7 +34,7 @@ cfg.freeze()
 
 # Load trained network model
 model = MLPPoseNetwork(cfg)
-device = 'cuda'
+device = cfg.MODEL.DEVICE
 model.to(device)
 model.load_model(cfg, load_mlp=True)
 model = model.eval()
