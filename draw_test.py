@@ -5,14 +5,12 @@ from drawing_mode import DrawingMode
 from toolbox.erase import Erase
 from toolbox.draw import Write
 
-
-drawmode = DrawingMode.DRAWING
-
+Tool = OnHand()
 # mouse callback function
-def interactive_drawing(event,x,y,size,flags):
-    global ix,iy,drawmode, mode,erasing
+def interactive_drawing(event,x,y,size,flag):
+    #global ix,iy,drawmode, mode,erasing
 
-    OnHand.draw(img,event,x,y)
+    Tool.Draw(img,event,x,y)
 
 
     # drawing
@@ -44,7 +42,7 @@ def interactive_drawing(event,x,y,size,flags):
     # change pen size
 
 
-img = np.zeros((1080,1920,3), np.uint8)
+img = np.zeros((720,720,3), np.uint8)
 cv2.namedWindow('Window')
 cv2.setMouseCallback('Window',interactive_drawing)
 while(1):
@@ -53,14 +51,16 @@ while(1):
     if k==27:
         break
     elif k==43:
-        OnHand.sizeUp()
+        Tool.sizeUp()
     elif k==45:
-        OnHand.sizeDown()
-    elif k==99 or 67:
-        OnHand.next_color()
-    elif k==68 or 100:
-        OnHand.set_mode(Write)
-    elif k==69 or 101:
-        OnHand.set_mode(Erase)
+        Tool.sizeDown()
+    elif k==99 or k==67:
+        Tool.next_color()
+    elif k==68 or k==100:
+        Tool.set_mode(Write)
+    elif k==69 or k==101:
+        Tool.set_mode(Erase)
+    else:
+        print(k)
 
 cv2.destroyAllWindows()
