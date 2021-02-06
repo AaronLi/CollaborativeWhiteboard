@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
-from toolbox.on_hand import OnHand
-from drawing_mode import DrawingMode
-from toolbox.erase import Erase
-from toolbox.draw import Write
+from Drawing.toolbox.on_hand import OnHand
+from Drawing.toolbox.erase import Erase
+from Drawing.toolbox.draw import Write
 
 Tool = OnHand()
 # mouse callback function
@@ -50,7 +49,7 @@ while(1):
     k=cv2.waitKey(1)&0xFF
     if k==27:
         break
-    elif k==43:
+    elif k==43 or k==61:
         Tool.sizeUp()
     elif k==45:
         Tool.sizeDown()
@@ -60,7 +59,5 @@ while(1):
         Tool.set_mode(Write)
     elif k==69 or k==101:
         Tool.set_mode(Erase)
-    else:
-        print(k)
 
 cv2.destroyAllWindows()

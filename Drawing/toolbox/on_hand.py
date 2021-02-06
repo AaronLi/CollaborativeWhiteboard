@@ -1,5 +1,4 @@
-from toolbox.color import Color
-from toolbox.draw import Write
+from Drawing.toolbox.color import Color
 
 import cv2
 
