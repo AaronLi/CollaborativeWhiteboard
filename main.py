@@ -41,17 +41,16 @@ cv2.setMouseCallback('DrawWindow', Tool.Draw)
 
 while 1:
     ret,frame = cam.read()
-
-    cv2.imshow('DrawWindow', drawboard)
-
+    drew_drawing = False
     if ret:
-
         fixed_frame, _ = warp.display(frame, drawboard, PSEyeCam, detector,(640,480)) # frame,drawboard, DanCam, detector,(640,480)
         #final_display = np.hstack(fixed_frame,drawboard)
         if fixed_frame is not None:
             cv2.imshow("fixed_frame",fixed_frame)
-            print("Fixed framu")
-
+            focused_frame, _ = warp.undistort(fixed_frame, PSEyeCam, detector, (640, 480), _)
+            if focused_frame is not None:
+                cv2.imshow('DrawWindow', focused_frame)
+                drew_drawing = True
         else:
             frame = cv2.undistort(frame, PSEyeCam.mtx, PSEyeCam.dist, None, None)
             #for center in centers:
@@ -60,18 +59,19 @@ while 1:
 
             cv2.imshow("fixed_frame",frame)
             print("Doo doo frame")
+        if not drew_drawing:
+            cv2.imshow('DrawWindow', drawboard)
+    k = cv2.waitKey(1) & 0xFF
 
-        k = cv2.waitKey(1) & 0xFF
-
-        if k == 27:
-            break
-        elif k == 43 or k == 61:
-            Tool.sizeUp()
-        elif k == 45:
-            Tool.sizeDown()
-        elif k == 99 or k == 67:
-            Tool.next_color()
-        elif k == 68 or k == 100:
-            Tool.set_mode(Write)
-        elif k == 69 or k == 101:
-            Tool.set_mode(Erase)
+    if k == 27:
+        break
+    elif k == 43 or k == 61:
+        Tool.sizeUp()
+    elif k == 45:
+        Tool.sizeDown()
+    elif k == 99 or k == 67:
+        Tool.next_color()
+    elif k == 68 or k == 100:
+        Tool.set_mode(Write)
+    elif k == 69 or k == 101:
+        Tool.set_mode(Erase)

@@ -9,28 +9,28 @@ from surface_detect.cam_config import DanCam
 class SurfaceDetection:
 
     @staticmethod
-    def undistort(sourceImage, cam, detector, size):
+    def undistort(sourceImage, cam, detector, size, apriltag_centers = None):
         width, height = size
+        if apriltag_centers is None:
+            newMtx, validROI = cv2.getOptimalNewCameraMatrix(cam.mtx, cam.dist,
+                                                             (sourceImage.shape[0], sourceImage.shape[1]), 1)
 
-        newMtx, validROI = cv2.getOptimalNewCameraMatrix(cam.mtx, cam.dist,
-                                                         (sourceImage.shape[0], sourceImage.shape[1]), 1)
+            sourceImage = cv2.undistort(sourceImage, cam.mtx, cam.dist, None, None)
 
-        sourceImage = cv2.undistort(sourceImage, cam.mtx, cam.dist, None, None)
+            gray = cv2.cvtColor(sourceImage, cv2.COLOR_BGR2GRAY)
 
-        gray = cv2.cvtColor(sourceImage, cv2.COLOR_BGR2GRAY)
+            results = detector.detect(gray, estimate_tag_pose=True,
+                                      camera_params=(newMtx[0, 0], newMtx[1, 1], newMtx[0, 2], newMtx[1, 2]),
+                                      tag_size=0.074)
 
-        results = detector.detect(gray, estimate_tag_pose=True,
-                                  camera_params=(newMtx[0, 0], newMtx[1, 1], newMtx[0, 2], newMtx[1, 2]),
-                                  tag_size=0.074)
-
-        apriltag_centers = np.zeros((4, 2))
-        corners_to_use = (1, 0, 2, 3)
-        print(len(results))
-        if len(results) == 4:
-            for tag in results:
-                apriltag_centers[tag.tag_id] = tag.corners[corners_to_use[tag.tag_id]]
-        else:
-            return None, apriltag_centers
+            apriltag_centers = np.zeros((4, 2))
+            corners_to_use = (1, 0, 2, 3)
+            if len(results) == 4:
+                for tag in results:
+                    apriltag_centers[tag.tag_id] = tag.corners[corners_to_use[tag.tag_id]]
+            else:
+                print(len(results))
+                return None, apriltag_centers
 
         originalCorners = np.array(apriltag_centers, dtype=np.float32)  # apriltag_centers holds 4 r.center coordinates
 
@@ -69,11 +69,11 @@ class SurfaceDetection:
 
         apriltag_centers = np.zeros((4, 2))
         corners_to_use = (1, 0, 2, 3)
-        print(len(results))
         if len(results) == 4:
             for tag in results:
                 apriltag_centers[tag.tag_id] = tag.corners[corners_to_use[tag.tag_id]]
         else:
+            print(len(results))
             return None, apriltag_centers
 
         realCorners = np.array(apriltag_centers, dtype=np.float32)  # holds the position of the writing space
@@ -91,7 +91,7 @@ class SurfaceDetection:
         # use the matrix to warp the image
         transformedOutputImage = cv2.warpPerspective(frame, warpMatrix, (width, height))
 
-        pixels = cv2.inRange(transformedOutputImage, (0, 0, 0), (1, 1, 1))  # create a mask with writing
+        pixels = cv2.inRange(transformedOutputImage, (0, 0, 0), (0, 0, 0))  # create a mask with writing
         mask = cv2.bitwise_and(sourceImage, sourceImage, mask=pixels)
 
         finalFrame = mask + transformedOutputImage  # add the camera frame and the writing toghether
