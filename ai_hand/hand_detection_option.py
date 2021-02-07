@@ -6,13 +6,13 @@ import cv2
 from Drawing.toolbox.draw import Write
 from Drawing.toolbox.erase import Erase
 from Drawing.toolbox.on_hand import OnHand
-from surface_detect.cam_config import DanCam
+from surface_detect.cam_config import *
 from surface_detect.warp_surface import SurfaceDetection, detector
 import numpy as np
 
 #hand_pose_detector = HandPoseDetector()
 # webcam settings - default image size [640x480]
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 hand_detector = cv2.CascadeClassifier("cascade.xml")
 
@@ -29,22 +29,20 @@ Tool = OnHand(drawboard)
 warp = SurfaceDetection
 pen = Write()
 eraser = Erase()
-penX, penY = 0, 0
+penX, penY = None, None
 Tool.set_mode(pen)
 had_box = False
 alpha = 0.7
 while (True):
     # Capture frame-by-frame
     ret, frame = cap.read()
-    print(frame.shape)
-    fixed_frame, _ = warp.display(frame, drawboard, DanCam, detector,(640,480))
+    fixed_frame, _ = warp.display(frame, drawboard, PSEyeCam, detector,(640,480))
     if fixed_frame is not None:
-        undistorted_frame, _ = surface_detector.undistort(frame, DanCam, detector, (640, 480), _)
+        undistorted_frame, _ = surface_detector.undistort(frame, PSEyeCam, detector, (640, 480), _)
         if undistorted_frame is not None:
             frame = undistorted_frame
             frame = cv2.flip(frame, 0)
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
 
             #est_pose_uv, est_pose_cam_xyz = hand_pose_detector.detect(frame)
             boxes = hand_detector.detectMultiScale(gray_frame, scaleFactor=1.2, minNeighbors=10)
@@ -54,17 +52,24 @@ while (True):
 
                 y = 480-y
                 box_center_x, box_center_y = x+w//2, y+h//2
-                penX = penX * alpha + box_center_x * (1-alpha)
-                penY = penY * alpha + box_center_y * (1-alpha)
+                if penX is None and penY is None:
+                    penX = box_center_x
+                    penY = box_center_y
+                else:
+                    penX = penX * alpha + box_center_x * (1-alpha)
+                    penY = penY * alpha + box_center_y * (1-alpha)
                 cv2.rectangle(undistorted_frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
                 has_box = True
-            cv2.circle(undistorted_frame, (int(penX), int(penY)), 5, (0, 0, 255), thickness=-1)
-            if has_box:
-                if not had_box:
-                    Tool.DrawStart(int(penX), int(penY), None, None)
-                Tool.DrawMove(int(penX), int(penY), None, None)
-            else:
-                Tool.DrawStop()
+            if penX is not None and penY is not None:
+                if has_box:
+                    cv2.circle(undistorted_frame, (int(penX), int(penY)), 5, (0, 0, 255), thickness=-1)
+                    if not had_box:
+                        Tool.DrawStart(int(penX), int(penY), None, None)
+                    Tool.DrawMove(int(penX), int(penY), None, None)
+                else:
+                    Tool.DrawStop()
+                    penX = None
+                    penY = None
             had_box = has_box
         # draw 2D hand pose
         #skeleton_frame = draw_2d_skeleton(original_frame, est_pose_uv)
@@ -73,7 +78,7 @@ while (True):
 
     else:
         cv2.imshow("preview", frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == 27:
         break
 
     # print frame per second
