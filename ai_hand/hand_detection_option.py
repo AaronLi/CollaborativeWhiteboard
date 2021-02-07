@@ -28,7 +28,7 @@ Tool = OnHand(drawboard)
 warp = SurfaceDetection
 pen = Write()
 eraser = Erase()
-penX, penY = 0, 0
+penX, penY = None, None
 Tool.set_mode(pen)
 had_box = False
 alpha = 0.7
@@ -48,17 +48,24 @@ while (True):
             for x, y, w, h in boxes:
                 print(w, h)
                 box_center_x, box_center_y = x+w//2, y+h//2
-                penX = penX * alpha + box_center_x * (1-alpha)
-                penY = penY * alpha + box_center_y * (1-alpha)
+                if penX is None and penY is None:
+                    penX = box_center_x
+                    penY = box_center_y
+                else:
+                    penX = penX * alpha + box_center_x * (1-alpha)
+                    penY = penY * alpha + box_center_y * (1-alpha)
                 cv2.rectangle(undistorted_frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
                 has_box = True
-            cv2.circle(undistorted_frame, (int(penX), int(penY)), 5, (0, 0, 255), thickness=-1)
-            if has_box:
-                if not had_box:
-                    Tool.DrawStart(int(penX), int(penY), None, None)
-                Tool.DrawMove(int(penX), int(penY), None, None)
-            else:
-                Tool.DrawStop(int(penX), int(penY), None, None)
+            if penX is not None and penY is not None:
+                if has_box:
+                    cv2.circle(undistorted_frame, (int(penX), int(penY)), 5, (0, 0, 255), thickness=-1)
+                    if not had_box:
+                        Tool.DrawStart(int(penX), int(penY), None, None)
+                    Tool.DrawMove(int(penX), int(penY), None, None)
+                else:
+                    Tool.DrawStop(int(penX), int(penY), None, None)
+                    penX = None
+                    penY = None
             had_box = has_box
         # draw 2D hand pose
         #skeleton_frame = draw_2d_skeleton(original_frame, est_pose_uv)
@@ -67,7 +74,7 @@ while (True):
 
     else:
         cv2.imshow("preview", frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == 27:
         break
 
     # print frame per second
