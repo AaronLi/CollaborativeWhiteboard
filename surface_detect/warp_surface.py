@@ -3,13 +3,19 @@ import numpy as np
 import pupil_apriltags as apriltag
 from surface_detect.cam_config import DanCam
 
+detector = apriltag.Detector(families='tag36h11',
+                             nthreads=1,
+                             quad_decimate=1.0,
+                             quad_sigma=0.0,
+                             refine_edges=1,
+                             decode_sharpening=0.25)
 
 # would already have the centers from april
 
 class SurfaceDetection:
 
     @staticmethod
-    def undistort(sourceImage, cam, detector, size, apriltag_centers = None):
+    def undistort(sourceImage, cam, detector: apriltag.Detector, size, apriltag_centers = None):
         width, height = size
         if apriltag_centers is None:
             newMtx, validROI = cv2.getOptimalNewCameraMatrix(cam.mtx, cam.dist,
