@@ -4,12 +4,13 @@ import cv2
 
 
 class OnHand:
-    def __init__(self):
+    def __init__(self,image):
         self.current_tool = None
         self.size = 6
         self.color = Color.RED
         self.color_index = 0
         self.isdown = False
+        self.img = image
 
     def set_mode(self, drawmode):
         self.current_tool = drawmode
@@ -24,7 +25,7 @@ class OnHand:
             self.size -= 5
         print("Current size",self.size)
 
-    def Draw(self, img, event, x, y):
+    def Draw(self, event, x, y, flags, param):
 
         if event==cv2.EVENT_LBUTTONDOWN:
             self.isdown = True
@@ -32,7 +33,7 @@ class OnHand:
             self.isdown = False
 
         if self.current_tool is not None and self.isdown:
-            self.current_tool.draw(img, event, x, y, self.size, self.color)
+            self.current_tool.draw(self.img, event, x, y, self.size, self.color)
 
     def next_color(self):
         self.color_index = (self.color_index+1)%len(Color.COLOR_LIST)
