@@ -4,15 +4,12 @@ class Erase:
     def __init__(self):
         self.prev_coord = (0,0)
 
-    def draw(self,img,event,x,y,size,color=None):
+    def drawStart(self,img, x, y, size, color):
+        cv2.circle(img, (x, y), size//2, (0,0,0), -1)
+        self.prev_coord = (x,y)
 
-        if event == cv2.EVENT_LBUTTONDOWN:
-            #self.drawmode = DrawingMode.DRAWING
-            cv2.circle(img, (x, y), size, (0,0,0), -1)
-            self.prev_coord = (x,y)
+    def DrawMove(self,img, x, y, size, color):
+        cv2.line(img, (x, y), self.prev_coord, (0, 0, 0), size)
+        self.prev_coord = (x, y)
 
-        elif event == cv2.EVENT_MOUSEMOVE:
-            #if self.drawmode == DrawingMode.DRAWING:
-            #cv2.circle(img, (x, y), size, (0,0,0), -1)
-            cv2.line(img, (x, y), self.prev_coord, (0,0,0), size)
-            self.prev_coord=(x,y)
+    #def DrawStop(self,img, x, y, size, color):

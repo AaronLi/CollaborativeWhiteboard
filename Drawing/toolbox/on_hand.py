@@ -25,15 +25,17 @@ class OnHand:
             self.size -= 5
         print("Current size",self.size)
 
-    def Draw(self, event, x, y, flags, param):
+    def DrawStart(self, x, y, flags, param):
+        self.isdown = True
+        self.current_tool.DrawStart(self.img, x, y, self.size, self.color)
 
-        if event==cv2.EVENT_LBUTTONDOWN:
-            self.isdown = True
-        elif event==cv2.EVENT_LBUTTONUP:
-            self.isdown = False
+    def DrawMove(self, x, y, flags, param):
+        if self.isdown:
+            self.current_tool.DrawMove(self.img, x, y, self.size, self.color)
 
-        if self.current_tool is not None and self.isdown:
-            self.current_tool.draw(self.img, event, x, y, self.size, self.color)
+    def DrawStop(self, x, y, flags, param):
+        self.isdown = False
+
 
     def next_color(self):
         self.color_index = (self.color_index+1)%len(Color.COLOR_LIST)
