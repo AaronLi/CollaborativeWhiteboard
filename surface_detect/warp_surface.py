@@ -49,7 +49,7 @@ class SurfaceDetection:
         #return transformedOutputImage,apriltag_centers
 
 
-    def display(self, sourceImage, frame, cam, detector, size):
+    def display(sourceImage, frame, cam, detector, size):
         width,height = size
 
         input_height,input_width,input_depth = frame.shape

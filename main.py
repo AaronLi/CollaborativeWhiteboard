@@ -46,7 +46,8 @@ while 1:
 
     if ret:
 
-        fixed_frame = warp.display(frame,drawboard, DanCam, detector, (640,480))
+        fixed_frame = warp.display(frame,drawboard, DanCam, detector,(640,480)) # frame,drawboard, DanCam, detector,(640,480)
+        #final_display = np.hstack(fixed_frame,drawboard)
 
         if fixed_frame is not None:
             cv2.imshow("fixed_frame",fixed_frame)
@@ -54,8 +55,8 @@ while 1:
 
         else:
             frame = cv2.undistort(frame, DanCam.mtx, DanCam.dist, None, None)
-            for center in centers:
-                cv2.circle(frame,tuple(int(i) for i in center),5,(0,0,255),-1)
+            #for center in centers:
+            #    cv2.circle(frame,tuple(int(i) for i in center),5,(0,0,255),-1)
 
 
             cv2.imshow("fixed_frame",frame)

@@ -25,7 +25,7 @@ class OnHand:
             self.size -= 5
         print("Current size",self.size)
 
-    def Draw(self, event, x, y):
+    def Draw(self, event, x, y, flags, param):
 
         if event==cv2.EVENT_LBUTTONDOWN:
             self.isdown = True
