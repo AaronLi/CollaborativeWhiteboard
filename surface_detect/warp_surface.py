@@ -3,8 +3,8 @@ import numpy as np
 import pupil_apriltags as apriltag
 
 detector = apriltag.Detector(families='tag36h11',
-                             nthreads=1,
-                             quad_decimate=1.0,
+                             nthreads=4,
+                             quad_decimate=3,
                              quad_sigma=0.0,
                              refine_edges=1,
                              decode_sharpening=0.25)
@@ -14,15 +14,17 @@ detector = apriltag.Detector(families='tag36h11',
 class SurfaceDetection:
 
     @staticmethod
-    def undistort(sourceImage, cam, detector: apriltag.Detector, size, apriltag_centers = None):
+    def undistort(sourceImage, cam, detector: apriltag.Detector, size, apriltag_centers = None,fix_distorsion=False):
         width, height = size
+        if fix_distorsion:
+            sourceImage = SurfaceDetection.fix_disortion(sourceImage,cam)
+
+
         if apriltag_centers is None:
+            gray = cv2.cvtColor(sourceImage, cv2.COLOR_BGR2GRAY)
+
             newMtx, validROI = cv2.getOptimalNewCameraMatrix(cam.mtx, cam.dist,
                                                              (sourceImage.shape[0], sourceImage.shape[1]), 1)
-
-            sourceImage = cv2.undistort(sourceImage, cam.mtx, cam.dist, None, None)
-
-            gray = cv2.cvtColor(sourceImage, cv2.COLOR_BGR2GRAY)
 
             results = detector.detect(gray, estimate_tag_pose=True,
                                       camera_params=(newMtx[0, 0], newMtx[1, 1], newMtx[0, 2], newMtx[1, 2]),
@@ -56,7 +58,7 @@ class SurfaceDetection:
         return transformedOutputImage, apriltag_centers
 
     @staticmethod
-    def display(sourceImage, frame, cam, detector, size):
+    def display(sourceImage, frame, cam, detector, size,fix_distortion=False):
         width, height = size
 
         input_height, input_width, input_depth = frame.shape
@@ -64,9 +66,12 @@ class SurfaceDetection:
         newMtx, validROI = cv2.getOptimalNewCameraMatrix(cam.mtx, cam.dist,
                                                          (sourceImage.shape[0], sourceImage.shape[1]), 1)
 
-        sourceImage = cv2.undistort(sourceImage, cam.mtx, cam.dist, None, None)
+        if fix_distortion:
+            sourceImage = SurfaceDetection.fix_disortion(sourceImage,cam)
 
         gray = cv2.cvtColor(sourceImage, cv2.COLOR_BGR2GRAY)
+
+
 
         results = detector.detect(gray, estimate_tag_pose=True,
                                   camera_params=(newMtx[0, 0], newMtx[1, 1], newMtx[0, 2], newMtx[1, 2]),
@@ -101,3 +106,9 @@ class SurfaceDetection:
 
         finalFrame = mask + transformedOutputImage  # add the camera frame and the writing toghether
         return finalFrame, apriltag_centers
+
+    @staticmethod
+    def fix_disortion(sourceImage,cam):
+        sourceImage = cv2.undistort(sourceImage, cam.mtx, cam.dist, None, None)
+
+        return sourceImage

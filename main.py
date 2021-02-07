@@ -7,13 +7,18 @@ from Drawing.toolbox.draw import Write
 from surface_detect.warp_surface import SurfaceDetection, detector
 from surface_detect.cam_config import *
 
-
+height = 1080
+width = 1920
 
 cam = cv2.VideoCapture(0)
+cam.set(3, width)
+cam.set(4, height)
 
-drawboard = np.zeros((480,640,3), dtype=np.uint8)
+drawboard = np.zeros((height,width,3), dtype=np.uint8)
 
 Tool = OnHand(drawboard)
+
+presentation_images = cv2.imread("E:\\MISC\\MacHacks\\WhiteoardPython\\presentation\\photo_3")
 
 warp = SurfaceDetection
 cv2.namedWindow("DrawWindow")
@@ -23,13 +28,15 @@ eraser = Erase()
 
 while 1:
     ret,frame = cam.read()
+    print(frame.shape)
     drew_drawing = False
     if ret:
-        fixed_frame, _ = warp.display(frame, drawboard, DanCam, detector,(640,480)) # frame,drawboard, DanCam, detector,(640,480)
+        frame = cv2.rotate(frame,cv2.ROTATE_180)
+        fixed_frame, _ = warp.display(frame, drawboard, DanCam, detector,(width,height)) # frame,drawboard, DanCam, detector,(640,480)
         #final_display = np.hstack(fixed_frame,drawboard)
         if fixed_frame is not None:
             cv2.imshow("fixed_frame",fixed_frame)
-            focused_frame, _ = warp.undistort(fixed_frame, DanCam, detector, (640, 480), _)
+            focused_frame, _ = warp.undistort(fixed_frame, DanCam, detector, (width,height), _)
             if focused_frame is not None:
                 cv2.imshow('DrawWindow', focused_frame)
                 drew_drawing = True

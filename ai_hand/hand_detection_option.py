@@ -12,7 +12,11 @@ import numpy as np
 
 #hand_pose_detector = HandPoseDetector()
 # webcam settings - default image size [640x480]
-cap = cv2.VideoCapture(1)
+height = 1080
+width = 1920
+cap = cv2.VideoCapture(0)
+cap.set(3, width)
+cap.set(4, height)
 
 hand_detector = cv2.CascadeClassifier("cascade.xml")
 
@@ -22,7 +26,7 @@ SKIN_BOUNDS = np.array(
     (((116, 124, 132), (255, 157, 255)),), dtype=np.uint8
 )
 
-drawboard = np.zeros((480,640,3), dtype=np.uint8)
+drawboard = np.zeros((height,width,3), dtype=np.uint8)
 
 Tool = OnHand(drawboard)
 
@@ -36,21 +40,22 @@ alpha = 0.7
 while (True):
     # Capture frame-by-frame
     ret, frame = cap.read()
-    fixed_frame, _ = warp.display(frame, drawboard, PSEyeCam, detector,(640,480))
+    frame = cv2.rotate(frame, cv2.ROTATE_180)
+    fixed_frame, _ = warp.display(frame.copy(), drawboard, DanCam, detector,(width,height))
     if fixed_frame is not None:
-        undistorted_frame, _ = surface_detector.undistort(frame, PSEyeCam, detector, (640, 480), _)
+        undistorted_frame, _ = surface_detector.undistort(frame, DanCam, detector, (width, height), _,fix_distorsion=True)
         if undistorted_frame is not None:
             frame = undistorted_frame
-            frame = cv2.flip(frame, 0)
+
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
             #est_pose_uv, est_pose_cam_xyz = hand_pose_detector.detect(frame)
-            boxes = hand_detector.detectMultiScale(gray_frame, scaleFactor=1.2, minNeighbors=10)
+            boxes = hand_detector.detectMultiScale(gray_frame, scaleFactor=1.2, minNeighbors=10,minSize=(100,100))
             has_box = False
             for x, y, w, h in boxes:
                 print(w, h)
 
-                y = 480-y
+                #y = 480-y
                 box_center_x, box_center_y = x+w//2, y+h//2
                 if penX is None and penY is None:
                     penX = box_center_x
