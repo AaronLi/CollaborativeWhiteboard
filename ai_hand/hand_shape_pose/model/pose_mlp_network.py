@@ -9,12 +9,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from hand_shape_pose.model.net_hg import Net_HM_HG
-from hand_shape_pose.model.net_mlp import MLP
-from hand_shape_pose.util.net_util import load_net_model
-from hand_shape_pose.util.graph_util import build_hand_graph
-from hand_shape_pose.util.image_util import BHWC_to_BCHW, normalize_image, uvd2xyz, uvd2xyz_freihand_train, uvd2xyz_freihand_test
-from hand_shape_pose.util.heatmap_util import compute_uv_from_heatmaps
+from ai_hand.hand_shape_pose.model.net_hg import Net_HM_HG
+from ai_hand.hand_shape_pose.model.net_mlp import MLP
+from ai_hand.hand_shape_pose.util.net_util import load_net_model
+from ai_hand.hand_shape_pose.util.graph_util import build_hand_graph
+from ai_hand.hand_shape_pose.util.image_util import BHWC_to_BCHW, normalize_image, uvd2xyz, uvd2xyz_freihand_train, uvd2xyz_freihand_test
+from ai_hand.hand_shape_pose.util.heatmap_util import compute_uv_from_heatmaps
 
 class MLPPoseNetwork(nn.Module):
     """

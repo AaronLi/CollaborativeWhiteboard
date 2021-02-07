@@ -38,6 +38,8 @@ detector = apriltag.Detector(families='tag36h11',
 warp = SurfaceDetection
 cv2.namedWindow("DrawWindow")
 cv2.setMouseCallback('DrawWindow', Tool.Draw)
+pen = Write()
+eraser = Erase()
 
 while 1:
     ret,frame = cam.read()
@@ -72,6 +74,6 @@ while 1:
     elif k == 99 or k == 67:
         Tool.next_color()
     elif k == 68 or k == 100:
-        Tool.set_mode(Write)
+        Tool.set_mode(pen)
     elif k == 69 or k == 101:
-        Tool.set_mode(Erase)
+        Tool.set_mode(eraser)
