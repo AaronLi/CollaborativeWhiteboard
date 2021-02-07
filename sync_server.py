@@ -1,8 +1,8 @@
-import pickle
 import base64
-from flask import Flask, request
+import pickle
+
 import numpy as np
-import cv2
+from flask import Flask, request
 app = Flask(__name__)
 
 data = np.zeros((480, 640, 3), dtype=np.uint8)

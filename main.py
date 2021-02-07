@@ -14,7 +14,7 @@ cam = cv2.VideoCapture(1)
 cam.set(3, width)
 cam.set(4, height)
 
-sync_board = SyncableBoard("http://localhost:5000")
+sync_board = SyncableBoard("http://34.122.107.117:5000")
 sync_board.set_array(np.zeros((height,width,3), dtype=np.uint8))
 sync_board.start_syncing()
 
