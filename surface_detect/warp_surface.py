@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import pupil_apriltags as apriltag
-from surface_detect.cam_config import DanCam
 
 detector = apriltag.Detector(families='tag36h11',
                              nthreads=1,
