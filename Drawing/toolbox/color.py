@@ -1,10 +1,10 @@
-
+import math
 
 class Color:
-    RED = (0,0,255)
-    GREEN = (0,255,0)
-    BLUE = (255,0,0)
+    RED = (45,45,200)
+    GREEN = (45,200,45)
+    BLUE = (200,45,45)
 
-    COLOR_LIST = (RED,GREEN,BLUE)
+    COLOR_LIST = (RED, GREEN, BLUE)
 
     #def next(self):

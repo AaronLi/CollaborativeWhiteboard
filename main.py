@@ -4,36 +4,16 @@ import pupil_apriltags as apriltag
 from Drawing.toolbox.on_hand import OnHand
 from Drawing.toolbox.erase import Erase
 from Drawing.toolbox.draw import Write
-from surface_detect.warp_surface import SurfaceDetection
+from surface_detect.warp_surface import SurfaceDetection, detector
 from surface_detect.cam_config import *
-
-
-
-#np.hstack for sidebyside
-
-
-
-
-
-
-
 
 
 
 cam = cv2.VideoCapture(1)
 
-testImg = cv2.imread("ai_hand/camera_parameter_K/checkerboard pattern.png")
-
 drawboard = np.zeros((480,640,3), dtype=np.uint8)
 
 Tool = OnHand(drawboard)
-
-detector = apriltag.Detector(families='tag36h11',
-                             nthreads=1,
-                             quad_decimate=1.0,
-                             quad_sigma=0.0,
-                             refine_edges=1,
-                             decode_sharpening=0.25)
 
 warp = SurfaceDetection
 cv2.namedWindow("DrawWindow")
