@@ -36,7 +36,7 @@ class SurfaceDetection:
                 for tag in results:
                     apriltag_centers[tag.tag_id] = tag.corners[corners_to_use[tag.tag_id]]
             else:
-                print(len(results))
+                #print(len(results))
                 return None, apriltag_centers
 
         originalCorners = np.array(apriltag_centers, dtype=np.float32)  # apriltag_centers holds 4 r.center coordinates
@@ -83,7 +83,7 @@ class SurfaceDetection:
             for tag in results:
                 apriltag_centers[tag.tag_id] = tag.corners[corners_to_use[tag.tag_id]]
         else:
-            print(len(results))
+            #print(len(results))
             return None, apriltag_centers
 
         realCorners = np.array(apriltag_centers, dtype=np.float32)  # holds the position of the writing space

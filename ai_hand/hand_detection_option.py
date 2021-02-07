@@ -9,6 +9,7 @@ from Drawing.toolbox.on_hand import OnHand
 from surface_detect.cam_config import *
 from surface_detect.warp_surface import SurfaceDetection, detector
 import numpy as np
+from sync_board import SyncableBoard
 
 #hand_pose_detector = HandPoseDetector()
 # webcam settings - default image size [640x480]
@@ -29,6 +30,11 @@ SKIN_BOUNDS = np.array(
 drawboard = np.zeros((height,width,3), dtype=np.uint8)
 
 Tool = OnHand(drawboard)
+drawboard = SyncableBoard("http://localhost:5000")
+drawboard.set_array(np.zeros((480,640,3), dtype=np.uint8))
+drawboard.start_syncing()
+print(drawboard.sync_runner.is_alive())
+Tool = OnHand(drawboard.array)
 
 warp = SurfaceDetection
 pen = Write()
