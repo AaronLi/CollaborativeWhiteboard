@@ -12,35 +12,6 @@ def interactive_drawing(event,x,y,size,flag):
     Tool.Draw(img,event,x,y)
 
 
-    # drawing
-    #    cv2.circle(img, (x, y), 1, (0, 0, 255), -1)
-
-    #elif event==cv2.EVENT_MOUSEMOVE:
-    #    if drawmode==DrawingMode.DRAWING:
-    #            cv2.circle(img,(x,y),1,(0,0,255),-1)
-
-    #elif event==cv2.EVENT_LBUTTONUP:
-    #    drawmode = DrawingMode.NONE
-
-
-    # erasing
-
-    #if event==cv2.EVENT_RBUTTONDOWN:
-    #    drawmode=DrawingMode.ERASING
-    #    cv2.circle(img, (x, y), 25, (0, 0, 0), -1)
-
-    #elif event==cv2.EVENT_MOUSEMOVE:
-    #    if drawmode==DrawingMode.ERASING:
-    #        # check for cv2.circle at that point and delete it
-    #        # for now just put a black circle in its place
-    #        cv2.circle(img, (x, y), 25, (0, 0, 0), -1)
-
-    #elif event==cv2.EVENT_RBUTTONUP:
-    #    drawmode=DrawingMode.NONE
-
-    # change pen size
-
-
 img = np.zeros((720,1280,3), np.uint8)
 cv2.namedWindow('Window')
 cv2.setMouseCallback('Window',interactive_drawing)
