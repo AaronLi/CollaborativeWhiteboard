@@ -8,7 +8,8 @@ from surface_detect.cam_config import DanCam
 
 class SurfaceDetection:
 
-    def undistort(self, sourceImage, cam, detector, size):
+    @staticmethod
+    def undistort(sourceImage, cam, detector, size):
         width, height = size
 
         newMtx, validROI = cv2.getOptimalNewCameraMatrix(cam.mtx, cam.dist,
@@ -47,8 +48,9 @@ class SurfaceDetection:
         # And now we can warp the Sudoku in the new image
         transformedOutputImage = cv2.warpPerspective(sourceImage, warpMatrix, (ouputImageWidth, outputImageHeight))
 
-        # return transformedOutputImage,apriltag_centers
+        return transformedOutputImage, apriltag_centers
 
+    @staticmethod
     def display(sourceImage, frame, cam, detector, size):
         width, height = size
 
@@ -89,10 +91,8 @@ class SurfaceDetection:
         # use the matrix to warp the image
         transformedOutputImage = cv2.warpPerspective(frame, warpMatrix, (width, height))
 
-        pixels = cv2.inRange(transformedOutputImage, (0, 0, 0), (0, 0, 0))  # create a mask with writing
-
+        pixels = cv2.inRange(transformedOutputImage, (0, 0, 0), (1, 1, 1))  # create a mask with writing
         mask = cv2.bitwise_and(sourceImage, sourceImage, mask=pixels)
 
         finalFrame = mask + transformedOutputImage  # add the camera frame and the writing toghether
-
-        return finalFrame
+        return finalFrame, apriltag_centers

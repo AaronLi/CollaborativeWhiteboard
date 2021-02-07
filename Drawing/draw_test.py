@@ -12,7 +12,7 @@ def interactive_drawing(event,x,y,size,flag):
     Tool.Draw(img,event,x,y)
 
 
-img = np.zeros((720,1280,3), np.uint8)
+img = np.zeros((720,1280,3), np.float32)
 cv2.namedWindow('Window')
 cv2.setMouseCallback('Window',interactive_drawing)
 while(1):
