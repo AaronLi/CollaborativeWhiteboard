@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import pupil_apriltags as apriltag
-from surface_detect.cam_config import DanCam
+from surface_detect.cam_config import PSEyeCam
 # would already have the centers from april
 
 detector = apriltag.Detector(families='tag36h11',
@@ -22,16 +22,13 @@ def undistort(sourceImage,cam,size):
 
     results = detector.detect(gray, estimate_tag_pose=True,
                               camera_params=(newMtx[0, 0], newMtx[1, 1], newMtx[0, 2], newMtx[1, 2]), tag_size=0.074)
-    i = 0
-
     apriltag_centers = np.zeros((4, 2))
-
-    for r in results:
-        apriltag_centers[i] = r.center
-        i += 1
-    print(i)
-
-    if i<4:
+    corners_to_use = (1, 0, 2, 3)
+    print(len(results))
+    if len(results) == 4:
+        for tag in results:
+            apriltag_centers[tag.tag_id] = tag.corners[corners_to_use[tag.tag_id]]
+    else:
         return None,apriltag_centers
 
 
@@ -53,7 +50,7 @@ def undistort(sourceImage,cam,size):
 
     return transformedOutputImage,apriltag_centers
 
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(1)
 
 while 1:
     ret,frame = cam.read()
@@ -62,14 +59,14 @@ while 1:
 
     if ret:
 
-        fixed_frame,centers = undistort(frame,DanCam,(640,480))
+        fixed_frame,centers = undistort(frame,PSEyeCam,(640,480))
 
         if fixed_frame is not None:
             cv2.imshow("fixed_frame",fixed_frame)
             print("Fixed framu")
 
         else:
-            frame = cv2.undistort(frame, DanCam.mtx, DanCam.dist, None, None)
+            frame = cv2.undistort(frame, PSEyeCam.mtx, PSEyeCam.dist, None, None)
             for center in centers:
                 cv2.circle(frame,tuple(int(i) for i in center),5,(0,0,255),-1)
 
