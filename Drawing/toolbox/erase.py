@@ -4,7 +4,7 @@ class Erase:
     def __init__(self):
         self.prev_coord = (0,0)
 
-    def drawStart(self,img, x, y, size, color):
+    def DrawStart(self,img, x, y, size, color):
         cv2.circle(img, (x, y), size//2, (0,0,0), -1)
         self.prev_coord = (x,y)
 

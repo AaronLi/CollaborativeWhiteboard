@@ -33,9 +33,18 @@ class OnHand:
         if self.isdown:
             self.current_tool.DrawMove(self.img, x, y, self.size, self.color)
 
-    def DrawStop(self, x, y, flags, param):
+    def DrawStop(self):
         self.isdown = False
 
+    def mouse(self, event, x, y, flags=None, param=None):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            self.DrawStart(x,y,flags,param)
+
+        elif event == cv2.EVENT_MOUSEMOVE:
+            self.DrawMove(x,y,flags,param)
+
+        elif event == cv2.EVENT_LBUTTONUP:
+            self.DrawStop()
 
     def next_color(self):
         self.color_index = (self.color_index+1)%len(Color.COLOR_LIST)
